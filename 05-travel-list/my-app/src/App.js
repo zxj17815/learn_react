@@ -11,11 +11,16 @@ export default function App() {
   function handleAddItems(item) {
     setItems((items) => [...items, item]);
   }
+
+  function handDeleteItem(id) {
+    setItems((items) => items.filter((item) => item.id !== id));
+  }
+
   return (
     <div className="app">
       <Logo />
       <From onAddItems={handleAddItems} />
-      <PackingList items={items} />
+      <PackingList items={items} onDeleteItem={handDeleteItem} />
       <Stats />
     </div>
   );
@@ -42,6 +47,8 @@ function From({ onAddItems }) {
     setQuantity(1);
   }
 
+
+
   return <form className="add-form" onSubmit={handleSubmit}>
     <h3>What do you need for your 😍 trip?</h3>
     <select value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} >
@@ -57,12 +64,12 @@ function From({ onAddItems }) {
   </form>
 }
 
-function PackingList({ items }) {
+function PackingList({ items, onDeleteItem }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item item={item} key={item.id} />
+          <Item item={item} key={item.id} onDeleteItem={onDeleteItem} />
         ))}
       </ul>
     </div>
@@ -75,9 +82,10 @@ function Stats() {
   </footer>
 }
 
-function Item({ item }) {
+function Item({ item, onDeleteItem }) {
   return <li>
     <span style={item.packed ? { textDecoration: "line-through" } : {}}>{item.quantity} {item.description}</span>
-    <button>{item.packed ? "✅" : "❌"}</button>
+    {/* <button>{item.packed ? "✅" : "❌"}</button> */}
+    <button onClick={() => onDeleteItem(item.id)}>❌</button>
   </li>
 }
